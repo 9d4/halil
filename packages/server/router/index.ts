@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import apiRouter from './api'
 import { errorHandler } from './error'
+import { serveStatic } from 'hono/bun'
 
 const app = new Hono()
 app.route('/api', apiRouter)
@@ -11,8 +12,22 @@ app.get('/__info__', async (c) => {
     })
 })
 
-app.get('/*', async (c) => {
-    return c.text('HTML content goes here')
+const indexHtml = await Bun.file('./web/build/index.html').text()
+
+app.get(
+    '/*',
+    serveStatic({
+        root: './web/build',
+        precompressed: true,
+    })
+)
+
+app.notFound(async (c) => {
+    if (c.req.path.startsWith('/api')) {
+        return c.json({ message: 'Resource not found' }, 404)
+    }
+
+    return c.html(indexHtml)
 })
 app.onError(errorHandler)
 
