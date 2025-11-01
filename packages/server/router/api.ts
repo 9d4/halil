@@ -6,7 +6,12 @@ import { authenticate } from '../lib/auth/auth'
 import { setAccessTokenCookie } from './cookie'
 import { authenticated } from './middleware'
 import { context } from './context'
-import { createProject, updateProject } from '../lib/project/project'
+import {
+    createProject,
+    deleteProject,
+    listProjects,
+    updateProject,
+} from '../lib/project/project'
 import { CreateProjectInput, UpdateProjectInput } from '../lib/schema/project'
 
 const api = new Hono()
@@ -44,6 +49,13 @@ const api = new Hono()
     // Routes: Projects
     // =============================================
 
+    // List projects
+    .get('/projects', authenticated, async (c) => {
+        const ctx = context(c)
+        const projects = await listProjects(ctx)
+        return c.json(projects)
+    })
+
     // Create a new project
     .post(
         '/projects',
@@ -70,6 +82,14 @@ const api = new Hono()
             return c.json(updated)
         }
     )
+
+    // Delete a project
+    .delete('/projects/:projectId', authenticated, async (c) => {
+        const ctx = context(c)
+        const projectId = c.req.param('projectId')
+        await deleteProject(ctx, projectId)
+        return c.body(null, 204)
+    })
 
 export type APIType = typeof api
 export default api
