@@ -1,6 +1,7 @@
 import { ErrorHandler } from 'hono'
 import { AppError, AppErrorKindToStatusCode } from '../lib/error/app'
 import config from '../config'
+import { ContentfulStatusCode } from 'hono/utils/http-status'
 
 export const errorHandler: ErrorHandler = (err, c) => {
     if (config.isDev) console.error('Handling error: ', err)
@@ -8,7 +9,7 @@ export const errorHandler: ErrorHandler = (err, c) => {
     if (err instanceof AppError) {
         const kind = err.getKind()
         const code = AppErrorKindToStatusCode[kind] || 500
-        return c.json(err.toJSON(), code as any)
+        return c.json(err.toJSON(), code as ContentfulStatusCode)
     }
 
     if (err instanceof SyntaxError) {

@@ -9,8 +9,8 @@ enum AppErrorKind {
 }
 
 type AppErrorOptions = {
-    code: string
-    cause?: any
+    code?: string
+    cause?: unknown
 }
 
 export class AppError extends Error {

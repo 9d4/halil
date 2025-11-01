@@ -1,12 +1,13 @@
 import z from 'zod'
-import snowflake from '../db/snowflake'
 
 // - convert url of github repo to pattern owner/repo
 // - support directly owner/repo input
 const GitHubRepoSchema = z.string().refine(
     (val) => {
         const githubUrlPattern =
+            //eslint-disable-next-line no-useless-escape
             /^https?:\/\/(www\.)?github\.com\/([^\/]+)\/([^\/]+)(\/)?$/
+        //eslint-disable-next-line no-useless-escape
         const ownerRepoPattern = /^[^\/]+\/[^\/]+$/
 
         return githubUrlPattern.test(val) || ownerRepoPattern.test(val)
@@ -23,4 +24,3 @@ export const CreateProjectInput = z.object({
 
 export type UpdateProjectInput = z.infer<typeof UpdateProjectInput>
 export const UpdateProjectInput = CreateProjectInput.partial()
-

@@ -20,7 +20,7 @@ export function createJWTToken(userId: string) {
 
     const token = jwt.sign({}, config.appSecret, {
         subject: userId,
-        expiresIn: config.jwtExpiresIn as any,
+        expiresIn: config.jwtExpiresIn as ms.StringValue,
         issuer: JWT_TOKEN_ISS,
     })
 
@@ -37,6 +37,6 @@ export function verifyJWTToken(token: string) {
         }) as { sub: string; iat: number; exp: number; iss: string }
         return decoded
     } catch (err) {
-        throw AppError.Unauthorized('Invalid token')
+        throw AppError.Unauthorized('Invalid token', { cause: err })
     }
 }

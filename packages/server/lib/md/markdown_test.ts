@@ -1,4 +1,4 @@
-import { describe, it } from 'bun:test'
+import { describe } from 'bun:test'
 import { readMarkdown } from './markdown'
 
 describe('markdown module', async () => {

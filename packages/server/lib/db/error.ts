@@ -1,9 +1,8 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
 
-export function parseDuplicateError(error: any) {
+export function parseDuplicateError(error: unknown) {
     if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-            const target = (error.meta && (error.meta.target as string[])) || []
             return { error: error }
         }
     }

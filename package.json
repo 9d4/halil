@@ -22,5 +22,13 @@
         "format": "prettier --write .",
         "lint": "eslint .",
         "prepare": "husky"
+    },
+    "lint-staged": {
+        "**/*.{js,ts}": [
+            "eslint --fix"
+        ],
+        "**/*": [
+            "prettier --write --ignore-unknown"
+        ]
     }
 }
