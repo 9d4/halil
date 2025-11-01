@@ -10,7 +10,6 @@ export const setAccessTokenCookie = (
     return setSignedCookie(c, 'halil_token', token, config.appSecret!, {
         secure: !config.isDev,
         httpOnly: true,
-        expires: expiredAt,
         maxAge: (expiredAt.getTime() - Date.now()) / 1000,
         sameSite: 'strict',
         prefix: config.isDev ? void 0 : 'host',

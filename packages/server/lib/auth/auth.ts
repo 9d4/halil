@@ -25,7 +25,7 @@ export function createJWTToken(userId: string) {
     })
 
     const expiration = ms(config.jwtExpiresIn as ms.StringValue)
-    return { token, expiredAt: new Date(expiration) }
+    return { token, expiredAt: new Date(Date.now() + expiration) }
 }
 
 export function verifyJWTToken(token: string) {
