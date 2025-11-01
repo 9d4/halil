@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: halil
+      POSTGRES_PASSWORD: thehalil
+      POSTGRES_DB: halil
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  db_data:
