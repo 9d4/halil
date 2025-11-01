@@ -24,3 +24,11 @@ export const CreateProjectInput = z.object({
 
 export type UpdateProjectInput = z.infer<typeof UpdateProjectInput>
 export const UpdateProjectInput = CreateProjectInput.partial()
+
+export type CreateTodoInput = z.infer<typeof CreateTodoInput>
+export const CreateTodoInput = z.object({
+    name: z.string().min(1).max(200),
+})
+
+export type UpdateTodoInput = z.infer<typeof UpdateTodoInput>
+export const UpdateTodoInput = CreateTodoInput.partial()

@@ -8,11 +8,22 @@ import { authenticated } from './middleware'
 import { context } from './context'
 import {
     createProject,
+    createProjectTodo,
     deleteProject,
+    deleteProjectTodo,
+    getProjectTodo,
     listProjects,
+    listProjectTodos,
     updateProject,
+    updateProjectTodo,
 } from '../lib/project/project'
-import { CreateProjectInput, UpdateProjectInput } from '../lib/schema/project'
+import {
+    CreateProjectInput,
+    CreateTodoInput,
+    UpdateProjectInput,
+    UpdateTodoInput,
+} from '../lib/schema/project'
+import z from 'zod'
 
 const api = new Hono()
 
@@ -90,6 +101,88 @@ const api = new Hono()
         await deleteProject(ctx, projectId)
         return c.body(null, 204)
     })
+
+    // =============================================
+    // Routes: Project's Todos
+    // =============================================
+
+    // List todos of a project
+    .get(
+        '/projects/:projectId/todos',
+        authenticated,
+        sValidator('param', z.object({ projectId: z.string() })),
+        async (c) => {
+            const ctx = context(c)
+            const { projectId } = c.req.valid('param')
+            const todos = await listProjectTodos(ctx, projectId)
+            return c.json(todos)
+        }
+    )
+
+    // Get todo details
+    .get(
+        '/projects/:projectId/todos/:todoId',
+        authenticated,
+        sValidator(
+            'param',
+            z.object({ projectId: z.string(), todoId: z.string() })
+        ),
+        async (c) => {
+            const ctx = context(c)
+            const { projectId, todoId } = c.req.valid('param')
+            const todo = await getProjectTodo(ctx, projectId, todoId)
+            return c.json(todo)
+        }
+    )
+
+    // Create new todo
+    .post(
+        '/projects/:projectId/todos',
+        authenticated,
+        sValidator('param', z.object({ projectId: z.string() })),
+        sValidator('json', CreateTodoInput),
+        async (c) => {
+            const ctx = context(c)
+            const { projectId } = c.req.valid('param')
+            const body = c.req.valid('json')
+            const todo = await createProjectTodo(ctx, projectId, body)
+            return c.json(todo, 201)
+        }
+    )
+
+    // Update todo
+    .patch(
+        '/projects/:projectId/todos/:todoId',
+        authenticated,
+        sValidator(
+            'param',
+            z.object({ projectId: z.string(), todoId: z.string() })
+        ),
+        sValidator('json', UpdateTodoInput),
+        async (c) => {
+            const ctx = context(c)
+            const { projectId, todoId } = c.req.valid('param')
+            const body = c.req.valid('json')
+            const todo = await updateProjectTodo(ctx, projectId, todoId, body)
+            return c.json(todo)
+        }
+    )
+
+    // Delete todo
+    .delete(
+        '/projects/:projectId/todos/:todoId',
+        authenticated,
+        sValidator(
+            'param',
+            z.object({ projectId: z.string(), todoId: z.string() })
+        ),
+        async (c) => {
+            const ctx = context(c)
+            const { projectId, todoId } = c.req.valid('param')
+            await deleteProjectTodo(ctx, projectId, todoId)
+            return c.body(null, 204)
+        }
+    )
 
 export type APIType = typeof api
 export default api
