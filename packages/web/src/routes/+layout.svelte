@@ -20,7 +20,9 @@
     <title>Halil - Secure ToDo List For Developers</title>
 </svelte:head>
 
-{@render children()}
+<div class="font-serif">
+    {@render children()}
+</div>
 
 <style lang="postcss">
     @reference "tailwindcss";

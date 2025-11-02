@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import apiRouter from './api'
 import { errorHandler } from './error'
 import { serveStatic } from 'hono/bun'
+import config from '../config'
 
 const app = new Hono()
 app.route('/api', apiRouter)
@@ -18,7 +19,7 @@ app.get(
     '/*',
     serveStatic({
         root: './web/build',
-        precompressed: true,
+        precompressed: !config.isDev,
     })
 )
 

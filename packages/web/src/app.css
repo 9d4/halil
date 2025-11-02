@@ -1,5 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap');
 @import 'tailwindcss';
 
 @theme {
     --font-display: 'Yeon Sung', sans-serif;
+    --font-serif:
+        'Noto Serif', 'Times New Roman', Times, Georgia, 'Palatino Linotype',
+        Palatino, serif;
 }
