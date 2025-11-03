@@ -23,8 +23,10 @@ import {
     CreateTodoInput,
     UpdateProjectInput,
     UpdateTodoInput,
+    UpdateTodoItemsInput,
 } from '../lib/schema/project'
 import z from 'zod'
+import { listTodoItems, updateTodoItems } from '../lib/project/todo'
 
 const api = new Hono()
 
@@ -195,6 +197,38 @@ const api = new Hono()
             const { projectId, todoId } = c.req.valid('param')
             await deleteProjectTodo(ctx, projectId, todoId)
             return c.body(null, 204)
+        }
+    )
+
+    // =============================================
+    // Routes: Todo's Items
+    // =============================================
+
+    // List todo items
+    .get(
+        '/todos/:todoId/items',
+        authenticated,
+        sValidator('param', z.object({ todoId: z.string() })),
+        async (c) => {
+            const { todoId } = c.req.valid('param')
+            const ctx = context(c)
+            const items = await listTodoItems(ctx, todoId)
+            return c.json(items)
+        }
+    )
+
+    // Update items
+    .put(
+        '/todos/:todoId/items',
+        authenticated,
+        sValidator('param', z.object({ todoId: z.string() })),
+        sValidator('json', UpdateTodoItemsInput),
+        async (c) => {
+            const { todoId } = c.req.valid('param')
+            const items = c.req.valid('json')
+            const ctx = context(c)
+            const todo = await updateTodoItems(ctx, todoId, items)
+            return c.json(todo)
         }
     )
 

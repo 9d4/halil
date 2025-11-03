@@ -44,7 +44,6 @@ model Todo {
 
 model TodoItem {
   id        BigInt   @id
-  projectId BigInt
   todoId    BigInt
   order     Int
   content   String?

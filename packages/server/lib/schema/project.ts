@@ -32,3 +32,11 @@ export const CreateTodoInput = z.object({
 
 export type UpdateTodoInput = z.infer<typeof UpdateTodoInput>
 export const UpdateTodoInput = CreateTodoInput.partial()
+
+export type UpdateTodoItemsInput = z.infer<typeof UpdateTodoItemsInput>
+export const UpdateTodoItemsInput = z
+    .object({
+        done: z.boolean().default(false),
+        content: z.string().min(1).max(500).nullable(),
+    })
+    .array()
