@@ -11,6 +11,7 @@ import {
     createProjectTodo,
     deleteProject,
     deleteProjectTodo,
+    getProject,
     getProjectTodo,
     listProjects,
     listProjectTodos,
@@ -66,6 +67,19 @@ const api = new Hono()
         const projects = await listProjects(ctx)
         return c.json(projects)
     })
+
+    // Get project details
+    .get(
+        '/projects/:projectId',
+        authenticated,
+        sValidator('param', z.object({ projectId: z.string() })),
+        async (c) => {
+            const ctx = context(c)
+            const { projectId } = c.req.valid('param')
+            const project = await getProject(ctx, projectId)
+            return c.json(project)
+        }
+    )
 
     // Create a new project
     .post(
