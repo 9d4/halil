@@ -1,0 +1,24 @@
+{
+    "name": "haliltry",
+    "module": "index.ts",
+    "type": "module",
+    "version": "0.0.5",
+    "scripts": {
+        "start": "bun run index.ts",
+        "build": "bun build index.ts --outdir=dist --target=node",
+        "test": "bun test",
+        "prepublishOnly": "./scripts/build.sh"
+    },
+    "bin": {
+        "halil": "./dist/index.js"
+    },
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "dependencies": {
+        "commander": "^14.0.2"
+    }
+}
