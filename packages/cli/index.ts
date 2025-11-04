@@ -1,9 +1,3 @@
-import { program } from 'commander'
-
-program
-    .name('halil')
-    .description('Halil — Simple todo list for developers.')
-    .version('0.0.0')
-    .action(program.help)
+import program from './cmd/main'
 
 program.parse(process.argv)
