@@ -4,7 +4,16 @@ import config from '../config'
 import { ContentfulStatusCode } from 'hono/utils/http-status'
 
 export const errorHandler: ErrorHandler = (err, c) => {
-    if (config.isDev) console.error('Handling error: ', err)
+    const req = {
+        method: c.req.method,
+        path: c.req.path,
+    }
+
+    if (config.isDev)
+        console.error('Handling error: ', {
+            err,
+            req,
+        })
 
     if (err instanceof AppError) {
         const kind = err.getKind()

@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { log, text } from '@clack/prompts'
-import api from '../lib/api'
+import { authLogin, getSavedLogin } from '../lib/auth'
 
 const authCmd = new Command('auth')
 
@@ -10,19 +10,21 @@ authCmd
     .command('login')
     .description('Log in to your account')
     .action(async () => {
+        const logged = getSavedLogin()
+        if (logged.loggedIn) {
+            log.info(`Already logged in as ${logged.login}.`)
+            return
+        }
+
         const login = await text({ message: 'Enter your username' })
         if (typeof login !== 'string') process.exit(0)
 
-        log.info(`Logging in as ${String(login)}...`)
-        const res = await api.auth.login.$post({
-            json: { login },
-        })
-        if (!res.ok) {
-            const json = await res.json()
-            log.error(`Login failed: ${res.status} ${json.message}`)
+        const res = await authLogin(login)
+        if (!res.success) {
+            log.error(res.message)
+            process.exit(1)
         }
-
-        log.success(`Logged in successfully!`)
+        log.success(res.message)
     })
 
 export default authCmd
