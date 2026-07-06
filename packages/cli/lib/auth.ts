@@ -2,7 +2,23 @@ import assert from 'assert'
 import api from './api'
 import config from './config'
 
-export async function authLogin(login: string) {
+export async function authSignup(
+    login: string,
+    password: string,
+    name?: string
+) {
+    const res = await api.auth.signup.$post({ json: { login, password, name } })
+    const json = (await res.json()) as Record<string, unknown>
+    if (res.status !== 200) {
+        return {
+            success: false as const,
+            message: `Signup failed: ${json.message}`,
+        }
+    }
+    return { success: true as const, message: `Account created for ${login}!` }
+}
+
+export async function authLogin(login: string, password: string) {
     if (getSavedLogin().loggedIn) {
         return {
             success: false,
@@ -11,7 +27,7 @@ export async function authLogin(login: string) {
     }
 
     const res = await api.auth.login.$post({
-        json: { login },
+        json: { login, password },
     })
     if (res.status !== 200) {
         const json = (await res.json()) as unknown

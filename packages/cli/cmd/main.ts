@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import { Command } from 'commander'
 import authCmd from './auth'
+import projectCmd from './project'
 
 const VERSION = '0.0.0'
 
@@ -14,6 +15,7 @@ program
     .version(VERSION)
     .action(program.help)
     .addCommand(authCmd)
+    .addCommand(projectCmd)
     .hook('preAction', (_, cmd) => {
         // Dont show version on help command
         if (cmd.args.includes('--help') || cmd.args.includes('-h')) return
