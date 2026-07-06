@@ -1,4 +1,4 @@
-import { Context } from 'hono'
+import type { Context } from 'hono'
 import { getSignedCookie, setSignedCookie } from 'hono/cookie'
 import config from '../config'
 

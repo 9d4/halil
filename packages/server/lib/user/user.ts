@@ -5,8 +5,10 @@ import { UserRegisterInput } from '../schema/user'
 
 export async function createUser(input: UserRegisterInput) {
     try {
+        const { password, ...rest } = input
+        const passwordHash = await Bun.password.hash(password)
         const user = await prisma.user.create({
-            data: input,
+            data: { ...rest, passwordHash },
         })
         return user
     } catch (e) {

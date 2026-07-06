@@ -6,11 +6,15 @@ import ms from 'ms'
 
 const JWT_TOKEN_ISS = 'halil'
 
-export async function authenticate(login: string) {
+export async function authenticate(login: string, password: string) {
     const user = await prisma.user.findFirst({
         where: { login },
     })
     if (!user) throw AppError.NotFound('User not found')
+    if (user.passwordHash) {
+        const ok = await Bun.password.verify(password, user.passwordHash)
+        if (!ok) throw AppError.Unauthorized('Invalid password')
+    }
     const token = createJWTToken(user.id.toString())
     return { token, user }
 }

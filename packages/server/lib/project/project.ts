@@ -1,7 +1,8 @@
-import { AppContext } from '../context'
+import type { AppContext } from '../context'
 import prisma from '../db'
 import snowflake from '../db/snowflake'
 import { AppError } from '../error/app'
+import { generateSeedPhrase, hashSeedPhrase } from '../crypto'
 import {
     CreateProjectInput,
     CreateTodoInput,
@@ -29,14 +30,33 @@ export async function createProject(
     ctx: AppContext,
     input: CreateProjectInput
 ) {
+    const seedPhrase = generateSeedPhrase()
+    const salt = crypto.randomUUID()
+    const seedHash = await hashSeedPhrase(seedPhrase, salt)
+
     const project = await prisma.project.create({
         data: {
             id: snowflake.generateBigInt(),
             ...input,
             userId: BigInt(ctx.userId!),
+            seedPhraseHash: seedHash,
+            seedPhraseSalt: salt,
         },
     })
-    return project
+    return { ...project, seedPhrase }
+}
+
+export async function verifySeedPhrase(projectId: string, phrase: string) {
+    const project = await prisma.project.findFirst({
+        where: { id: BigInt(projectId) },
+    })
+    if (!project) throw AppError.NotFound('Project not found')
+    if (!project.seedPhraseHash || !project.seedPhraseSalt)
+        throw AppError.BadRequest('Project has no encryption')
+    const hash = await hashSeedPhrase(phrase, project.seedPhraseSalt)
+    if (hash !== project.seedPhraseHash)
+        throw AppError.Unauthorized('Invalid seed phrase')
+    return true
 }
 
 export async function updateProject(

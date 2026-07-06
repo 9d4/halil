@@ -2,7 +2,7 @@ import { createMiddleware } from 'hono/factory'
 import { getAccessTokenFromCookie } from './cookie'
 import { AppError } from '../lib/error/app'
 import { verifyJWTToken } from '../lib/auth/auth'
-import { AppEnv } from './context'
+import type { AppEnv } from './context'
 
 export const authenticated = createMiddleware<AppEnv>(async (c, next) => {
     let token = c.req.header('Authorization') || ''

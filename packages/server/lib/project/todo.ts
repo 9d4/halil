@@ -1,4 +1,4 @@
-import { AppContext } from '../context'
+import type { AppContext } from '../context'
 import prisma from '../db'
 import snowflake from '../db/snowflake'
 import { UpdateTodoItemsInput } from '../schema/project'

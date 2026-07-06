@@ -13,6 +13,7 @@ export const UserRegisterInput = z
                 message: 'Login can only contain letters and numbers',
             }),
         name: z.string().optional(),
+        password: z.string().min(6).max(100),
     })
     .transform((data) => {
         return {
@@ -23,4 +24,5 @@ export const UserRegisterInput = z
 
 export const UserLoginInput = z.object({
     login: z.string().max(30),
+    password: z.string().min(1).max(100),
 })

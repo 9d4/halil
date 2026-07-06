@@ -1,6 +1,6 @@
-import { Context } from 'hono'
+import type { Context } from 'hono'
 import { verifyJWTToken } from '../lib/auth/auth'
-import { AppContext } from '../lib/context'
+import type { AppContext } from '../lib/context'
 
 type Variables = {
     userId: string

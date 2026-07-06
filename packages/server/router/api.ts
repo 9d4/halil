@@ -17,6 +17,7 @@ import {
     listProjectTodos,
     updateProject,
     updateProjectTodo,
+    verifySeedPhrase,
 } from '../lib/project/project'
 import {
     CreateProjectInput,
@@ -35,8 +36,8 @@ const api = new Hono()
 
     // Authenticate
     .post('/auth/login', sValidator('json', UserLoginInput), async (c) => {
-        const { login } = c.req.valid('json')
-        const { token } = await authenticate(login)
+        const { login, password } = c.req.valid('json')
+        const { token } = await authenticate(login, password)
         await setAccessTokenCookie(c, token.token, token.expiredAt)
         return c.json({ accessToken: token.token })
     })
@@ -107,6 +108,20 @@ const api = new Hono()
             const body = c.req.valid('json')
             const updated = await updateProject(ctx, projectId, body)
             return c.json(updated)
+        }
+    )
+
+    // Verify seed phrase
+    .post(
+        '/projects/:projectId/verify-seed',
+        authenticated,
+        sValidator('param', z.object({ projectId: z.string() })),
+        sValidator('json', z.object({ phrase: z.string().min(1) })),
+        async (c) => {
+            const { projectId } = c.req.valid('param')
+            const { phrase } = c.req.valid('json')
+            await verifySeedPhrase(projectId, phrase)
+            return c.json({ ok: true })
         }
     )
 

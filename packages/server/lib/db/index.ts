@@ -11,6 +11,6 @@ const prisma = new PrismaClient({ adapter })
 export default prisma
 
 // Extend BigInt prototype to support JSON serialization
-BigInt.prototype.toJSON = function () {
+;(BigInt.prototype as unknown as Record<string, unknown>).toJSON = function () {
     return this.toString()
 }
